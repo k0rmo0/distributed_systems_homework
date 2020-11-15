@@ -21,8 +21,7 @@ int main(int argc, char* argv[]) {
 
     if (argc < 2)    /* Test for correct number of arguments */
     {
-        fprintf(stderr, "File name not written\n",
-            argv[0]);
+        printf("File name not written\n");
         exit(1);
     }
 

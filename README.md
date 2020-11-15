@@ -23,7 +23,7 @@ And run it like this
 ```
 ./client *filename*
 ```
-If you want to test the multitreaded or multiprocess functionality you need to open a new terminal in same directory and run command
+If you want to test the multitreaded or multiprocess functionality you need to open a new terminal in the client directory and run command
 ```
 ./client *filename2*
 ```
