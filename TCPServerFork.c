@@ -13,16 +13,14 @@ void DieWithError(char *errorMessage)
 }
 
 int writeFile(int socketDescriptor){
-  printf("dosao u fju");
   int bytesReceived = 0;
   FILE *uploadedFile;
   char buffer[512];
 
 if (recv(socketDescriptor, buffer, sizeof(buffer), 0) < 0)
-  DieWithError ("error receiving name");
+  DieWithError ("Error receiving name");
 
 int fileNameSize = buffer[0];
-printf("file size: %d\n", fileNameSize);
 char fileName[fileNameSize];
 
 strcpy(fileName, buffer+1);
@@ -33,9 +31,12 @@ uploadedFile = fopen(fileName, "wb"); //overwrite if exists and create if not
     return 1;
   }
   
-  printf("Created filename: %s", fileName);
+  printf("Created filename: %s\n", fileName);
+  puts("waiting");
+  sleep(10);
 
-  while((bytesReceived=recv(socketDescriptor, buffer, sizeof(buffer),0) > 0)){
+  while((bytesReceived=recv(socketDescriptor, buffer, sizeof(buffer),0)) > 0){
+    printf("Received %d bytes\n", bytesReceived);
     fwrite(buffer, 1, bytesReceived, uploadedFile);
   }
 
@@ -62,8 +63,6 @@ int main(int argc, char *argv[]){
     DieWithError(" socket () failed") ;
 
   printf("[+]Server socket created successfully.\n");
-
-  // port = atoi(argv[1]);
 
   memset(&server, 0, sizeof(server));
   server.sin_family = AF_INET;    
