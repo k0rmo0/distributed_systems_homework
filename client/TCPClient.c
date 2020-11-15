@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
     if (argc < 2)    /* Test for correct number of arguments */
     {
-        fprintf(stderr, "Usage: %s <Server IP> <Echo Word> [<Echo Port>]\n",
+        fprintf(stderr, "File name not written\n",
             argv[0]);
         exit(1);
     }

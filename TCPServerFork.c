@@ -6,54 +6,11 @@
 #include <unistd.h>    
 #include <sys/wait.h>    
 
-void DieWithError(char *errorMessage)
-{
-  perror (errorMessage);
-  exit(1);
-}
-
-int writeFile(int socketDescriptor){
-  int bytesReceived = 0;
-  FILE *uploadedFile;
-  char buffer[512];
-
-if (recv(socketDescriptor, buffer, sizeof(buffer), 0) < 0)
-  DieWithError ("Error receiving name");
-
-int fileNameSize = buffer[0];
-char fileName[fileNameSize];
-
-strcpy(fileName, buffer+1);
-
-uploadedFile = fopen(fileName, "wb"); //overwrite if exists and create if not
- if(NULL == uploadedFile){
-    printf("Error opening file\n");
-    return 1;
-  }
-  
-  printf("Created filename: %s\n", fileName);
-  puts("waiting");
-  sleep(10);
-
-  while((bytesReceived=recv(socketDescriptor, buffer, sizeof(buffer),0)) > 0){
-    printf("Received %d bytes\n", bytesReceived);
-    fwrite(buffer, 1, bytesReceived, uploadedFile);
-  }
-
-  if(bytesReceived == 0) {
-    puts("Client disconnected");
-  } else if(bytesReceived == -1) {
-    DieWithError("Error recieving file");
-  }
-  close(socketDescriptor);
-  fclose(uploadedFile);
-  return 0;
-}
-
+int writeFile(int socketDescriptor);
+void DieWithError(char *errorMessage);
 
 int main(int argc, char *argv[]){
   int serverSocket, clientSocket, addr_size;
-  unsigned short port;
   unsigned int clientLen;
   pid_t processID;
   struct sockaddr_in server, client;
@@ -109,4 +66,47 @@ int main(int argc, char *argv[]){
     }
   }
   exit(0);
+}
+
+void DieWithError(char *errorMessage){
+  perror (errorMessage);
+  exit(1);
+}
+
+int writeFile(int socketDescriptor){
+  int bytesReceived = 0;
+  FILE *uploadedFile;
+  char buffer[512];
+
+if (recv(socketDescriptor, buffer, sizeof(buffer), 0) < 0)
+  DieWithError ("Error receiving name");
+
+int fileNameSize = buffer[0];
+char fileName[fileNameSize];
+
+strcpy(fileName, buffer+1);
+
+uploadedFile = fopen(fileName, "wb"); //overwrite if exists and create if not
+ if(NULL == uploadedFile){
+    DieWithError ("Error creating file");
+  }
+  
+  printf("Created filename: %s\n", fileName);
+
+  puts("waiting\n");
+  sleep(10);
+
+  while((bytesReceived=recv(socketDescriptor, buffer, sizeof(buffer),0)) > 0){
+    printf("Received %d bytes\n", bytesReceived);
+    fwrite(buffer, 1, bytesReceived, uploadedFile);
+  }
+
+  if(bytesReceived == 0) {
+    puts("Client disconnected");
+  } else if(bytesReceived == -1) {
+    DieWithError("Error recieving file");
+  }
+  close(socketDescriptor);
+  fclose(uploadedFile);
+  return 0;
 }
