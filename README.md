@@ -27,6 +27,6 @@ If you want to test the multitreaded or multiprocess functionality you need to o
 ```
 ./client *filename2*
 ```
-To test you can use two .txt files in the client directory
+For the test you can use two .txt files in the client directory
 
 
